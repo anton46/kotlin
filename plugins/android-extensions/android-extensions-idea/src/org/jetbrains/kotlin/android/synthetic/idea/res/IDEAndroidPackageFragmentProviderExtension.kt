@@ -20,8 +20,8 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleServiceManager
 import com.intellij.openapi.project.Project
-import org.jetbrains.android.facet.AndroidFacet
 import org.jetbrains.kotlin.analyzer.ModuleInfo
+import org.jetbrains.kotlin.android.model.AndroidModuleInfoProvider
 import org.jetbrains.kotlin.android.synthetic.idea.androidExtensionsIsEnabled
 import org.jetbrains.kotlin.android.synthetic.idea.androidExtensionsIsExperimental
 import org.jetbrains.kotlin.android.synthetic.res.AndroidLayoutXmlFileManager
@@ -41,7 +41,8 @@ class IDEAndroidPackageFragmentProviderExtension(val project: Project) : Android
     }
 
     private fun isTestMode(module: Module): Boolean {
-        return ApplicationManager.getApplication().isUnitTestMode && AndroidFacet.getInstance(module) != null
+        return ApplicationManager.getApplication().isUnitTestMode
+                && (AndroidModuleInfoProvider.getInstance(module)?.isAndroidModule() ?: false)
     }
 
     private fun isAndroidExtensionsEnabled(module: Module): Boolean {
@@ -51,7 +52,7 @@ class IDEAndroidPackageFragmentProviderExtension(val project: Project) : Android
     }
 
     private fun isLegacyIdeaAndroidModule(module: Module): Boolean {
-        val facet = AndroidFacet.getInstance(module)
-        return facet != null && !facet.requiresAndroidModel()
+        val infoProvider = AndroidModuleInfoProvider.getInstance(module) ?: return false
+        return !infoProvider.isGradleModule()
     }
 }

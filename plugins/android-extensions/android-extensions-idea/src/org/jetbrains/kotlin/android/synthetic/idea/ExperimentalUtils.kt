@@ -19,8 +19,8 @@ package org.jetbrains.kotlin.android.synthetic.idea
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.Module
 import kotlinx.android.extensions.CacheImplementation
-import org.jetbrains.android.facet.AndroidFacet
 import org.jetbrains.kotlin.analyzer.ModuleInfo
+import org.jetbrains.kotlin.android.model.AndroidModuleInfoProvider
 import org.jetbrains.kotlin.android.synthetic.AndroidCommandLineProcessor.Companion.ANDROID_COMPILER_PLUGIN_ID
 import org.jetbrains.kotlin.android.synthetic.AndroidCommandLineProcessor.Companion.EXPERIMENTAL_OPTION
 import org.jetbrains.kotlin.android.synthetic.AndroidCommandLineProcessor.Companion.ENABLED_OPTION
@@ -46,7 +46,8 @@ private fun Module.getOptionValueInFacet(option: CliOption): String? {
 }
 
 private fun isTestMode(module: Module): Boolean {
-    return ApplicationManager.getApplication().isUnitTestMode && AndroidFacet.getInstance(module) != null
+    return ApplicationManager.getApplication().isUnitTestMode
+            && (AndroidModuleInfoProvider.getInstance(module)?.isAndroidModule() ?: false)
 }
 
 internal val Module.androidExtensionsIsEnabled: Boolean
