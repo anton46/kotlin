@@ -14,6 +14,10 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import java.io.File
 
+val Module.isAndroidModule
+
+    get() = AndroidModuleInfoProvider.getInstance(this)?.isAndroidModule() ?: false
+
 interface AndroidModuleInfoProvider {
     companion object {
         val EP_NAME = ExtensionPointName.create<AndroidModuleInfoProvider>("org.jetbrains.kotlin.android.model.androidModuleInfoProvider")
